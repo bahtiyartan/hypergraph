@@ -26,7 +26,7 @@ public class DependencyMap extends JPanel implements ActionListener {
 	public static final int RadiusFactor = 15;
 	public static final int MinimumRadius = 8;
 
-	Model m;
+	Model model;
 
 	JScrollPane sp;
 
@@ -47,61 +47,72 @@ public class DependencyMap extends JPanel implements ActionListener {
 		int shiftX = getWidth() / 2;
 		int shiftY = getHeight() / 2;
 
-		for (int i = 0; i < m.getItemCount(); i++) {
-			Item item = m.getItemAt(i);
+		for (Module module : model.Modules) {
 
-			g.setColor(item.Module.Color);
+			for (int i = 0; i < module.getItemCount(); i++) {
+				Item item = module.SubItems.get(i);
 
-			for (int j = 0; j < item.DependentToMe.size(); j++) {
-				Item from = m.getItem(item.DependentToMe.get(j));
+				g.setColor(module.Color);
 
-				if (from != null) {
+				for (int j = 0; j < item.DependentToMe.size(); j++) {
+					Item from = item.DependentToMe.get(j);
 
-					int itemX = shiftX + item.X; // - item.getBoxSize() / 2;
-					int itemY = shiftY + item.Y; // - item.getBoxSize() / 2;
+					if (from != null) {
 
-					int toX = shiftX + from.X; // - from.getBoxSize() / 2;
-					int toY = shiftY + from.Y; // - from.getBoxSize() / 2;
+						int itemX = shiftX + item.X; // - item.getBoxSize() / 2;
+						int itemY = shiftY + item.Y; // - item.getBoxSize() / 2;
 
-					gr.drawLine(itemX, itemY, toX, toY);
+						int toX = shiftX + from.X; // - from.getBoxSize() / 2;
+						int toY = shiftY + from.Y; // - from.getBoxSize() / 2;
+
+						gr.drawLine(itemX, itemY, toX, toY);
+					}
+
 				}
-
 			}
+
 		}
 
-		for (int i = 0; i < m.getItemCount(); i++) {
-			Item item = m.getItemAt(i);
+		for (int moduleIndex = 0; moduleIndex < model.getModuleCount(); moduleIndex++) {
 
-			int x = (int) (shiftX + item.X) - item.getBoxSize() / 2;
-			int y = (int) (shiftY + item.Y) - item.getBoxSize() / 2;
+			Module module = model.getModuleAt(moduleIndex);
 
-			g.setColor(item.Module.Color);
+			for (int i = 0; i < module.getItemCount(); i++) {
+				Item item = module.SubItems.get(i);
 
-			gr.fillOval(x, y, item.getBoxSize(), item.getBoxSize());
+				int x = (int) (shiftX + item.X) - item.getBoxSize() / 2;
+				int y = (int) (shiftY + item.Y) - item.getBoxSize() / 2;
 
-			gr.setColor(Color.BLACK);
+				g.setColor(module.Color);
 
-			String name = anonymize(item.Name) + " " + item.X;
-			int xPosShift = -18;
-			if (item.Angle > 180) {
-				xPosShift = gr.getFontMetrics().stringWidth(name) + 10;
+				gr.fillOval(x, y, item.getBoxSize(), item.getBoxSize());
+
+				gr.setColor(Color.BLACK);
+
+				String name = anonymize(item.Name) + " " + item.X;
+				int xPosShift = -18;
+				if (item.Angle > 180) {
+					xPosShift = gr.getFontMetrics().stringWidth(name) + 10;
+				}
+
+				// if ((item.Angle < 135 && item.Angle > 45) || (item.Angle < 315 && item.Angle
+				// > 225)) {
+
+				if (item.DependentToMe.size() > 2) {
+					gr.drawString(name, x - xPosShift, y + 8);
+				}
+				// }
+
 			}
-
-			// if ((item.Angle < 135 && item.Angle > 45) || (item.Angle < 315 && item.Angle
-			// > 225)) {
-
-			if (item.DependentToMe.size() > 2) {
-				gr.drawString(name, x - xPosShift, y + 8);
-			}
-			// }
 
 		}
 
 		gr.fillRect(10, this.getHeight() - 20, 11, 11);
-		gr.drawString(m.getItemCount() + " items", 25, this.getHeight() - 11);
+		gr.drawString(model.getItemCount() + " items", 25, this.getHeight() - 11);
 
 	}
 
+	@SuppressWarnings("unused")
 	private static final String anonymize(String item) {
 
 		if (true)
@@ -164,8 +175,8 @@ public class DependencyMap extends JPanel implements ActionListener {
 				ex.printStackTrace();
 			}
 		} else {
-			m = ModelBuilder.buildModel();
-			this.setPreferredSize(new Dimension((int) (m.Radius * 2.2), (int) (m.Radius * 2.2)));
+			model = ModelBuilder.buildModel();
+			this.setPreferredSize(new Dimension((int) (model.Radius * 2.2), (int) (model.Radius * 2.2)));
 			this.repaint();
 			this.revalidate();
 		}

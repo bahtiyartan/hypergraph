@@ -1,33 +1,44 @@
 package com.hyperpl.ui.graph.test.dependencymap;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
 
 public class Model {
 
 	int Radius;
-	public double unitAngle;
 
-	private Vector<Item> List = new Vector<Item>();
-	private Hashtable<String, Item> EasyAccess = new Hashtable<String, Item>();
+	public Hashtable<String, Item> EasyAccess = new Hashtable<String, Item>();
+
+	public ArrayList<Module> Modules = new ArrayList<Module>();
+	private Hashtable<String, Module> ModuleEasyAccess = new Hashtable<String, Module>();
 
 	public Model() {
 
 	}
 
-	public void addItem(Item i) {
-		List.add(i);
-		EasyAccess.put(i.Name, i);
-
-		unitAngle = 360.0 / this.List.size();
+	public Module getModule(String moduleName) {
+		return this.ModuleEasyAccess.get(moduleName);
 	}
 
-	public int getItemCount() {
-		return List.size();
+	public Module addModule(String moduleName) {
+
+		Module newModule = this.ModuleEasyAccess.get(moduleName);
+
+		if (newModule == null) {
+
+			newModule = new Module(moduleName);
+			this.Modules.add(newModule);
+			this.ModuleEasyAccess.put(moduleName, newModule);
+
+			// int unitAngle = 360.0 / this.Modules.size();
+
+		}
+
+		return newModule;
 	}
 
-	public Item getItemAt(int i) {
-		return List.get(i);
+	public Module getItemAt(int i) {
+		return Modules.get(i);
 	}
 
 	public Item getItem(String name) {
@@ -35,22 +46,50 @@ public class Model {
 	}
 
 	public void sort() {
-		java.util.Collections.sort(List);
+		// java.util.Collections.sort(List);
 	}
 
 	public void calculatePositions() {
-		
-		this.Radius = (int) (List.size() * DependencyMap.RadiusFactor  / (2 * Math.PI));
 
-		for (int i = 0; i < List.size(); i++) {
-			
-			List.get(i).Angle = unitAngle * i;
+		int itemCount = this.getItemCount();
 
-			List.get(i).X = (int) ( (Radius) * Math.sin(Math.PI * 2 * List.get(i).Angle / 360));
-			List.get(i).Y = (int) ( (Radius) * Math.cos(Math.PI * 2 * List.get(i).Angle / 360));
+		this.Radius = (int) (itemCount * DependencyMap.RadiusFactor / (2 * Math.PI));
 
+		double unitAngle = 360.0 / this.getItemCount();
+
+		int count = 0;
+		for (Module m : Modules) {
+			for (int i = 0; i < m.getItemCount(); i++) {
+
+				Item subItem = m.SubItems.get(i);
+
+				subItem.Angle = unitAngle * count;
+
+				subItem.X = (int) ((Radius) * Math.sin(Math.PI * 2 * subItem.Angle / 360));
+				subItem.Y = (int) ((Radius) * Math.cos(Math.PI * 2 * subItem.Angle / 360));
+
+				count++;
+			}
 		}
 
+	}
+
+	public int getItemCount() {
+		int nTotal = 0;
+
+		for (int i = 0; i < Modules.size(); i++) {
+			nTotal = nTotal + Modules.get(i).getItemCount();
+		}
+
+		return nTotal;
+	}
+
+	public Module getModuleAt(int moduleIndex) {
+		return Modules.get(moduleIndex);
+	}
+
+	public int getModuleCount() {
+		return Modules.size();
 	}
 
 }

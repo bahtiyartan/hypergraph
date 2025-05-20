@@ -1,7 +1,6 @@
 package com.hyperpl.ui.graph.test.dependencymap;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import com.hyperpl.util.file.FileAccess;
 
@@ -15,19 +14,19 @@ public class ModelBuilder {
 		ignore.put("SYSWORKFLOW", "");
 		ignore.put("CIASLOCKS", "");
 		ignore.put("CSYSTABLES", "");
+		ignore.put("DEVLOG", "");
 
-		//allowModules.put("SYS", "");
+		//allowModules.put("ALL", "");
+		allowModules.put("SYS", "");
 		//allowModules.put("DEV", "");
-		//allowModules.put("BPM", "");
+		allowModules.put("CRM", "");
 	}
 
 	public static Model buildModel() {
 
-		String folder = "C:\\TMP\\Data\\";
+		String folder = "data\\";
 
 		String[] classlist = FileAccess.readString(folder + "classlist.dat").split("\\n");
-
-		Hashtable<String, Module> moduleCache = new Hashtable<>();
 
 		Model model = new Model();
 
@@ -39,16 +38,17 @@ public class ModelBuilder {
 			// String baseName = className[1].trim();
 			String moduleName = className[2].trim();
 
-			if (!allowModules.containsKey(moduleName)) {
+			if (allowModules.containsKey(moduleName) || allowModules.containsKey("ALL")) {
 
-				Module module = moduleCache.get(moduleName);
+				Module module = model.getModule(moduleName);
 				if (module == null) {
-					module = new Module(moduleName);
-					moduleCache.put(moduleName, module);
+					module = model.addModule(moduleName);
 				}
 
-				Item c = new Item(itemName, module);
-				model.addItem(c);
+				Item c = new Item(itemName);
+				module.addItem(c);
+				
+				model.EasyAccess.put(itemName, c);
 			}
 
 		}

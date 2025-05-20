@@ -7,13 +7,12 @@ public class Item extends Point implements Comparable<Item> {
 	String Name;
 	Module Module;
 
-	Vector<String> DependentToMe;
+	Vector<Item> DependentToMe;
 
-	public Item(String name, Module module) {
+	public Item(String name) {
 		this.Name = name;
-		this.Module = module;
 
-		DependentToMe = new Vector<String>();
+		DependentToMe = new Vector<Item>();
 	}
 
 	@Override
@@ -31,8 +30,8 @@ public class Item extends Point implements Comparable<Item> {
 
 	public void addDependency(Item from) {
 
-		if (!DependentToMe.contains(from.Name)) {
-			DependentToMe.add(from.Name);
+		if (!DependentToMe.contains(from)) {
+			DependentToMe.add(from);
 		}
 	}
 

@@ -1,14 +1,19 @@
 package com.hyperpl.ui.graph.test.dependencymap;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Color;
 
 public class Module extends Point {
+	
+	public double unitAngle;
 
 	Random rand = new Random();
 
 	String Name;
 	Color Color;
+	
+	public ArrayList<Item> SubItems = new ArrayList<Item>();
 
 	public Module(String name) {
 		this.Name = name;
@@ -18,6 +23,15 @@ public class Module extends Point {
 		int b = 64 + (int) (Math.random() * 128);
 
 		Color = new Color(r, g, b);
+	}
+
+	public void addItem(Item item) {
+		SubItems.add(item);
+		unitAngle = 360.0 / this.SubItems.size();
+	}
+	
+	public int getItemCount() {
+		return this.SubItems.size();
 	}
 
 }
