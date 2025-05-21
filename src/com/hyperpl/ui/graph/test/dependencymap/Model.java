@@ -59,6 +59,9 @@ public class Model {
 
 		int count = 0;
 		for (Module m : Modules) {
+			
+			m.sortItemsByDependencyCount();
+			
 			for (int i = 0; i < m.getItemCount(); i++) {
 
 				Item subItem = m.SubItems.get(i);

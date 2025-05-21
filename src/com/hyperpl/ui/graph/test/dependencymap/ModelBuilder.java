@@ -15,11 +15,16 @@ public class ModelBuilder {
 		ignore.put("CIASLOCKS", "");
 		ignore.put("CSYSTABLES", "");
 		ignore.put("DEVLOG", "");
+		ignore.put("CIASNUMRANGE","");
+		ignore.put("CIASBAS002","");
+		ignore.put("CIASBAS001","");
+		ignore.put("CIASBAS004","");
 
 		//allowModules.put("ALL", "");
 		allowModules.put("SYS", "");
-		//allowModules.put("DEV", "");
-		allowModules.put("CRM", "");
+		allowModules.put("DEV", "");
+		//allowModules.put("CRM", "");
+		//allowModules.put("SMS", "");
 	}
 
 	public static Model buildModel() {

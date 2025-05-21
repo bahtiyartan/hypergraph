@@ -66,9 +66,11 @@ public class DependencyMap extends JPanel implements ActionListener {
 						int toY = shiftY + from.Y; // - from.getBoxSize() / 2;
 
 						gr.drawLine(itemX, itemY, toX, toY);
+
 					}
 
 				}
+
 			}
 
 		}
@@ -89,7 +91,7 @@ public class DependencyMap extends JPanel implements ActionListener {
 
 				gr.setColor(Color.BLACK);
 
-				String name = anonymize(item.Name) + " " + item.X;
+				String name = anonymize(item.Name) + " " + item.DependentToMe.size();
 				int xPosShift = -18;
 				if (item.Angle > 180) {
 					xPosShift = gr.getFontMetrics().stringWidth(name) + 10;
@@ -98,8 +100,9 @@ public class DependencyMap extends JPanel implements ActionListener {
 				// if ((item.Angle < 135 && item.Angle > 45) || (item.Angle < 315 && item.Angle
 				// > 225)) {
 
-				if (item.DependentToMe.size() > 2) {
+				if (i == 0) {
 					gr.drawString(name, x - xPosShift, y + 8);
+					System.out.println(name);
 				}
 				// }
 
